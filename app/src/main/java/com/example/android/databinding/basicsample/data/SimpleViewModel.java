@@ -1,6 +1,5 @@
 package com.example.android.databinding.basicsample.data;
 
-import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
@@ -25,20 +24,19 @@ public class SimpleViewModel
     }
 
     public void onLike() {
-        this.likes.setValue(this.likes.getValue() + 1);
+        Integer prevLikes = this.likes.getValue();
+        if (prevLikes != null) {
+            this.likes.setValue(prevLikes + 1);
+        }
     }
 
     public LiveData<Popularity> getPopularity() {
         return Transformations.map(this.likes,
-                                   new Function<Integer, Popularity>() {
-                                       @Override
-                                       public Popularity apply(Integer input) {
-                                           if (input > 9)
-                                               return Popularity.STAR;
-                                           else if (input > 4)
-                                               return Popularity.POPULAR;
-                                           else return Popularity.NORMAL;
-                                       }
+                                   input -> {
+                                       if (input > 9) return Popularity.STAR;
+                                       else if (input > 4)
+                                           return Popularity.POPULAR;
+                                       else return Popularity.NORMAL;
                                    });
     }
 
